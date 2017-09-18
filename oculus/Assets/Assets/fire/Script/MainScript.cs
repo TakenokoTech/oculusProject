@@ -18,6 +18,13 @@ public class MainScript : MonoBehaviour {
     private Vector3 nowLeftHand;
     private Vector3 prevLeftHand;
 
+    private Rigidbody rigidbodyRightHand;
+    private Vector3 nowRightHand;
+    private Vector3 prevRightHand;
+
+    private GameObject rightFire;
+    private GameObject leftFire;
+
 
     // Use this for initialization
     void Start () {
@@ -32,6 +39,7 @@ public class MainScript : MonoBehaviour {
 
         // time
         time += Time.deltaTime;
+        nowRightHand = rightHand.transform.position;
         nowLeftHand = leftHand.transform.position;
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -43,7 +51,9 @@ public class MainScript : MonoBehaviour {
         SetButtonMapping();
         SetStickMapping();
 
+        prevRightHand = rightHand.transform.position;
         prevLeftHand = leftHand.transform.position;
+        
         // 顔の動き
         Vector3 position = InputTracking.GetLocalPosition(VRNode.CenterEye);
         Quaternion rotation = InputTracking.GetLocalRotation(VRNode.CenterEye);
@@ -78,6 +88,7 @@ public class MainScript : MonoBehaviour {
         }
         if (OVRInput.GetUp(OVRInput.RawButton.RIndexTrigger)) {
             Debug.Log("右人差し指トリガーを離した");
+            ShotFireRight();
         }
         if (OVRInput.GetDown(OVRInput.RawButton.RHandTrigger))
         {
@@ -160,25 +171,48 @@ public class MainScript : MonoBehaviour {
 
     void CreateRightFire()
     {
-
-        Vector3 rightHandPos = rightHand.transform.position;
-        GameObject rightFire = (GameObject)Instantiate(FireComplex, rightHandPos, Quaternion.identity);
-        rightFire.transform.parent = effect.transform;
-        rightFire.name = "rightFire";
-        HandFireScript handScript = rightFire.GetComponent<HandFireScript>();
-        handScript.SetHand(rightHand);
+        if (rightFire == null)
+        {
+            Vector3 rightHandPos = rightHand.transform.position;
+            rightFire = (GameObject)Instantiate(FireComplex, rightHandPos, Quaternion.identity);
+            rightFire.transform.parent = effect.transform;
+            rightFire.name = "rightFire";
+            HandFireScript handScript = rightFire.GetComponent<HandFireScript>();
+            handScript.SetHand(rightHand);
+        }
 
     }
 
     void CreateLeftFire()
     {
 
-        Vector3 leftHandPos = leftHand.transform.position;
-        GameObject leftFire = (GameObject)Instantiate(FireComplex, leftHandPos, Quaternion.identity);
-        leftFire.transform.parent = effect.transform;
-        leftFire.name = "leftFire";
-        HandFireScript handScript = leftFire.GetComponent<HandFireScript>();
-        handScript.SetHand(leftHand);
+        if (leftFire == null)
+        {
+            Vector3 leftHandPos = leftHand.transform.position;
+            leftFire = (GameObject)Instantiate(FireComplex, leftHandPos, Quaternion.identity);
+            leftFire.transform.parent = effect.transform;
+            leftFire.name = "leftFire";
+            HandFireScript handScript = leftFire.GetComponent<HandFireScript>();
+            handScript.SetHand(leftHand);
+        }
+    }
+
+    void ShotFireRight()
+    {
+
+        float x = 1000 * (nowRightHand.x - prevRightHand.x);
+        float y = 1000 * (nowRightHand.y - prevRightHand.y);
+        float z = 1000 * (nowRightHand.z - prevRightHand.z);
+        float dist = Vector3.Distance(nowRightHand, prevRightHand) * 1000;
+
+        GameObject wildFire = (GameObject)Instantiate(WildFire, nowRightHand, Quaternion.identity);
+        wildFire.transform.parent = effect.transform;
+        wildFire.name = "rightShot";
+        FireShot fireShot = wildFire.GetComponent<FireShot>();
+        fireShot.Force(x, y, z);
+
+        Destroy(rightFire);
+        rightFire = null;
 
     }
 
@@ -188,13 +222,15 @@ public class MainScript : MonoBehaviour {
         float y = 1000 * (nowLeftHand.y - prevLeftHand.y);
         float z = 1000 * (nowLeftHand.z - prevLeftHand.z);
         float dist = Vector3.Distance(nowLeftHand, prevLeftHand) * 1000;
-        // Debug.Log("dist = " + dist);
 
-        GameObject rightFire = (GameObject)Instantiate(WildFire, nowLeftHand, Quaternion.identity);
-        rightFire.transform.parent = effect.transform;
-        rightFire.name = "rightShot";
-        FireShot fireShot = rightFire.GetComponent<FireShot>();
+        GameObject wildFire = (GameObject)Instantiate(WildFire, nowLeftHand, Quaternion.identity);
+        wildFire.transform.parent = effect.transform;
+        wildFire.name = "leftShot";
+        FireShot fireShot = wildFire.GetComponent<FireShot>();
         fireShot.Force(x, y, z);
+
+        Destroy(leftFire);
+        leftFire = null;
 
     }
 

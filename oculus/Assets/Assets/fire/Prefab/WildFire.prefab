@@ -185,6 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 54596416528206178}
+  explosion: {fileID: 1377853421784258, guid: c19a3b16f353411489fbe38390fde611, type: 2}
 --- !u!198 &198165268305454852
 ParticleSystem:
   m_ObjectHideFlags: 1
