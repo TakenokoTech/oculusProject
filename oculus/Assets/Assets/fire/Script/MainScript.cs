@@ -11,6 +11,9 @@ public class MainScript : MonoBehaviour {
     public GameObject FireComplex;
     public GameObject effect;
 
+    //public GameObject UnitychanRightHand;
+    //public GameObject UnitychanLeftHand;
+
     private int fireCount = 0;
     private float time = 0f;
 
@@ -53,7 +56,11 @@ public class MainScript : MonoBehaviour {
 
         prevRightHand = rightHand.transform.position;
         prevLeftHand = leftHand.transform.position;
-        
+
+        // 手を反映
+        //UnitychanRightHand.transform.position = nowRightHand;
+        //UnitychanLeftHand.transform.position = nowLeftHand;
+
         // 顔の動き
         Vector3 position = InputTracking.GetLocalPosition(VRNode.CenterEye);
         Quaternion rotation = InputTracking.GetLocalRotation(VRNode.CenterEye);
