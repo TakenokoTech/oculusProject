@@ -5,36 +5,57 @@ using UnityEngine.VR;
 
 public class MainScript : MonoBehaviour {
 
+    // Oculus
+    public GameObject head;
     public GameObject rightHand;
     public GameObject leftHand;
+    
+    // オブジェクト
     public GameObject WildFire;
     public GameObject FireComplex;
     public GameObject effect;
 
-    //public GameObject UnitychanRightHand;
-    //public GameObject UnitychanLeftHand;
+    // ユニティちゃん
+    public GameObject UnitychanHead;
+    public GameObject UnitychanRightHand;
+    public GameObject UnitychanLeftHand;
 
+    // 環境変数
     private int fireCount = 0;
     private float time = 0f;
 
-    private Rigidbody rigidbodyLeftHand;
+    // 頭
+    private Vector3 nowHead;
+    private Vector3 prevHead;
+
+    // 左手
+    //private Rigidbody rigidbodyLeftHand;
     private Vector3 nowLeftHand;
     private Vector3 prevLeftHand;
-
-    private Rigidbody rigidbodyRightHand;
-    private Vector3 nowRightHand;
-    private Vector3 prevRightHand;
-
-    private GameObject rightFire;
     private GameObject leftFire;
 
+    // 右手
+    //private Rigidbody rigidbodyRightHand;
+    private Vector3 nowRightHand;
+    private Vector3 prevRightHand;
+    private GameObject rightFire;
+    
 
     // Use this for initialization
     void Start () {
         time = 0;
-        rigidbodyLeftHand = leftHand.GetComponent<Rigidbody>();
+
+        nowHead = head.transform.position;
+        prevHead = head.transform.position;
+
+        // rigidbodyLeftHand = leftHand.GetComponent<Rigidbody>();
         nowLeftHand = leftHand.transform.position;
         prevLeftHand = leftHand.transform.position;
+
+        //rigidbodyRightHand = rightHand.GetComponent<Rigidbody>();
+        nowRightHand = rightHand.transform.position;
+        prevRightHand = rightHand.transform.position;
+
     }
 	
 	// Update is called once per frame
@@ -42,6 +63,8 @@ public class MainScript : MonoBehaviour {
 
         // time
         time += Time.deltaTime;
+
+        nowHead = head.transform.position;
         nowRightHand = rightHand.transform.position;
         nowLeftHand = leftHand.transform.position;
 
@@ -54,12 +77,17 @@ public class MainScript : MonoBehaviour {
         SetButtonMapping();
         SetStickMapping();
 
+        prevHead = head.transform.position;
         prevRightHand = rightHand.transform.position;
         prevLeftHand = leftHand.transform.position;
 
         // 手を反映
-        //UnitychanRightHand.transform.position = nowRightHand;
-        //UnitychanLeftHand.transform.position = nowLeftHand;
+        UnitychanHead.transform.position = head.transform.position;
+        UnitychanHead.transform.rotation = head.transform.rotation;
+        UnitychanRightHand.transform.position = rightHand.transform.position;
+        UnitychanRightHand.transform.rotation = rightHand.transform.rotation;
+        UnitychanLeftHand.transform.position = leftHand.transform.position;
+        UnitychanLeftHand.transform.rotation = leftHand.transform.rotation;
 
         // 顔の動き
         Vector3 position = InputTracking.GetLocalPosition(VRNode.CenterEye);
